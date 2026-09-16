@@ -1,0 +1,45 @@
+# User-uploaded files
+fileUpload/
+
+# Large external binaries (download separately — see README)
+pointMutationScript/foldx
+pointMutationScript/foldx_old
+pointMutationScript/LigPlus/components.cif
+pointMutationScript/LigPlus/LigPlus.zip
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Jupyter notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Backup and versioned copies
+*.php-av
+*.php-bck
+*.php-cy
+*.php.mar26
+*-bck*
+*.bck
+
+# Logs and temporary outputs
+*.log
+*.tmp
+ranseed.dat
+hbdebug.dat
+
+# IDE and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# PHP error logs
+php_errors.log
+error_log

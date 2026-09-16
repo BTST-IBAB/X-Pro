@@ -1,0 +1,84 @@
+Bond   0. Atoms  486 [ CA  GLY   63  1] ->  468 [ OG1 THR   60  1]n E 3.4705 - HBPLUS
+Bond   1. Atoms  470 [ N   LEU   61  1] ->  467 [ CB  THR   60  1]n E 3.1690 - HBPLUS
+Bond   2. Atoms  490 [ CA  GLY   64  1] ->  466 [ O   THR   60  1]n E 3.4946 - HBPLUS
+Bond   3. Atoms  487 [ C   GLY   63  1] ->  466 [ O   THR   60  1]n E 3.7220 - HBPLUS
+Bond   4. Atoms  486 [ CA  GLY   63  1] ->  466 [ O   THR   60  1]n E 3.8761 - HBPLUS
+Bond   5. Atoms  472 [ C   LEU   61  1] ->  466 [ O   THR   60  1]n E 2.7883 - HBPLUS
+Bond   6. Atoms  471 [ CA  LEU   61  1] ->  466 [ O   THR   60  1]n E 2.6547 - HBPLUS
+Bond   7. Atoms  478 [ N   VAL   62  1] ->  465 [ C   THR   60  1]n E 3.3715 - HBPLUS
+Bond   8. Atoms  474 [ CB  LEU   61  1] ->  465 [ C   THR   60  1]n E 3.6386 - HBPLUS
+Bond   9. Atoms  473 [ O   LEU   61  1] ->  465 [ C   THR   60  1]n E 3.7410 - HBPLUS
+Bond  10. Atoms  472 [ C   LEU   61  1] ->  465 [ C   THR   60  1]n E 2.9827 - HBPLUS
+Bond  11. Atoms  471 [ CA  LEU   61  1] ->  464 [ CA  THR   60  1]n E 3.8130 - HBPLUS
+Bond  12. Atoms  463 [ N   THR   60  1] ->  460 [ CD2 HIS   59  1]n E 3.6295 - HBPLUS
+Bond  13. Atoms  463 [ N   THR   60  1] ->  458 [ CG  HIS   59  1]n E 3.4793 - HBPLUS
+Bond  14. Atoms  463 [ N   THR   60  1] ->  457 [ CB  HIS   59  1]n E 3.4004 - HBPLUS
+Bond  15. Atoms  465 [ C   THR   60  1] ->  456 [ O   HIS   59  1]n E 3.0550 - HBPLUS
+Bond  16. Atoms  464 [ CA  THR   60  1] ->  456 [ O   HIS   59  1]n E 2.7089 - HBPLUS
+Bond  17. Atoms  467 [ CB  THR   60  1] ->  455 [ C   HIS   59  1]n E 3.7197 - HBPLUS
+Bond  18. Atoms  466 [ O   THR   60  1] ->  455 [ C   HIS   59  1]n E 3.1254 - HBPLUS
+Bond  19. Atoms  465 [ C   THR   60  1] ->  455 [ C   HIS   59  1]n E 3.0224 - HBPLUS
+Bond  20. Atoms  464 [ CA  THR   60  1] ->  454 [ CA  HIS   59  1]n E 3.7994 - HBPLUS
+Bond  21. Atoms  463 [ N   THR   60  1] ->  449 [ C   SER   58  1]n E 3.3366 - HBPLUS
+Bond  22. Atoms  469 [ CG2 THR   60  1] ->  443 [ O   PRO   57  1]n E 3.5838 - HBPLUS
+Bond  23. Atoms  467 [ CB  THR   60  1] ->  443 [ O   PRO   57  1]n E 3.5992 - HBPLUS
+Bond  24. Atoms  468 [ OG1 THR   60  1] ->  439 [ CG2 VAL   56  1]n E 3.4022 - HBPLUS
+Bond  25. Atoms  485 [ N   GLY   63  1] ->  468 [ OG1 THR   60  1]H E 2.8886 - HBPLUS
+Bond  26. Atoms  489 [ N   GLY   64  1] ->  466 [ O   THR   60  1]H E 2.7825 - HBPLUS
+Bond  27. Atoms  468 [ OG1 THR   60  1] ->  443 [ O   PRO   57  1]H E 2.7669 - HBPLUS
+Bond  28. Atoms  463 [ N   THR   60  1] ->  443 [ O   PRO   57  1]H E 3.2016 - HBPLUS
+Bond  29. Atoms  491 [ C   GLY   64  1] ->  492 [ O   GLY   64  1]ce  1.2421 d Calc  
+Bond  30. Atoms  490 [ CA  GLY   64  1] ->  491 [ C   GLY   64  1]cr  1.5534 - Calc  
+Bond  31. Atoms  489 [ N   GLY   64  1] ->  490 [ CA  GLY   64  1]ce  1.4576 - Calc  
+Bond  32. Atoms  487 [ C   GLY   63  1] ->  488 [ O   GLY   63  1]ce  1.2277 d Calc  
+Bond  33. Atoms  486 [ CA  GLY   63  1] ->  487 [ C   GLY   63  1]cr  1.5013 - Calc  
+Bond  34. Atoms  485 [ N   GLY   63  1] ->  486 [ CA  GLY   63  1]ce  1.4559 - Calc  
+Bond  35. Atoms  482 [ CB  VAL   62  1] ->  484 [ CG2 VAL   62  1]ce  1.5316 - Calc  
+Bond  36. Atoms  482 [ CB  VAL   62  1] ->  483 [ CG1 VAL   62  1]ce  1.5102 - Calc  
+Bond  37. Atoms  480 [ C   VAL   62  1] ->  481 [ O   VAL   62  1]ce  1.2347 d Calc  
+Bond  38. Atoms  479 [ CA  VAL   62  1] ->  482 [ CB  VAL   62  1]cr  1.5444 - Calc  
+Bond  39. Atoms  479 [ CA  VAL   62  1] ->  480 [ C   VAL   62  1]cr  1.5167 - Calc  
+Bond  40. Atoms  478 [ N   VAL   62  1] ->  479 [ CA  VAL   62  1]ce  1.4459 - Calc  
+Bond  41. Atoms  475 [ CG  LEU   61  1] ->  477 [ CD2 LEU   61  1]ce  1.5327 - Calc  
+Bond  42. Atoms  475 [ CG  LEU   61  1] ->  476 [ CD1 LEU   61  1]ce  1.5029 - Calc  
+Bond  43. Atoms  474 [ CB  LEU   61  1] ->  475 [ CG  LEU   61  1]cr  1.4912 - Calc  
+Bond  44. Atoms  472 [ C   LEU   61  1] ->  473 [ O   LEU   61  1]ce  1.2269 d Calc  
+Bond  45. Atoms  471 [ CA  LEU   61  1] ->  474 [ CB  LEU   61  1]cr  1.4934 - Calc  
+Bond  46. Atoms  471 [ CA  LEU   61  1] ->  472 [ C   LEU   61  1]cr  1.5144 - Calc  
+Bond  47. Atoms  470 [ N   LEU   61  1] ->  471 [ CA  LEU   61  1]cr  1.4554 - Calc  
+Bond  48. Atoms  467 [ CB  THR   60  1] ->  469 [ CG2 THR   60  1]ce  1.4964 - Calc  
+Bond  49. Atoms  467 [ CB  THR   60  1] ->  468 [ OG1 THR   60  1]ce  1.4341 - Calc  
+Bond  50. Atoms  465 [ C   THR   60  1] ->  470 [ N   LEU   61  1]c E 1.3242 - Calc  
+Bond  51. Atoms  465 [ C   THR   60  1] ->  466 [ O   THR   60  1]ce  1.2236 d Calc  
+Bond  52. Atoms  464 [ CA  THR   60  1] ->  467 [ CB  THR   60  1]cr  1.5784 - Calc  
+Bond  53. Atoms  464 [ CA  THR   60  1] ->  465 [ C   THR   60  1]cr  1.5225 - Calc  
+Bond  54. Atoms  463 [ N   THR   60  1] ->  464 [ CA  THR   60  1]cr  1.4462 - Calc  
+Bond  55. Atoms  461 [ CE1 HIS   59  1] ->  462 [ NE2 HIS   59  1]c   1.3351 - Calc  
+Bond  56. Atoms  460 [ CD2 HIS   59  1] ->  462 [ NE2 HIS   59  1]c   1.3177 - Calc  
+Bond  57. Atoms  459 [ ND1 HIS   59  1] ->  461 [ CE1 HIS   59  1]c   1.3283 d Calc  
+Bond  58. Atoms  458 [ CG  HIS   59  1] ->  460 [ CD2 HIS   59  1]c   1.3885 d Calc  
+Bond  59. Atoms  458 [ CG  HIS   59  1] ->  459 [ ND1 HIS   59  1]c   1.3614 - Calc  
+Bond  60. Atoms  457 [ CB  HIS   59  1] ->  458 [ CG  HIS   59  1]cr  1.5060 - Calc  
+Bond  61. Atoms  455 [ C   HIS   59  1] ->  463 [ N   THR   60  1]c E 1.3392 - Calc  
+Bond  62. Atoms  455 [ C   HIS   59  1] ->  456 [ O   HIS   59  1]ce  1.2287 d Calc  
+Bond  63. Atoms  454 [ CA  HIS   59  1] ->  457 [ CB  HIS   59  1]cr  1.5309 - Calc  
+Bond  64. Atoms  454 [ CA  HIS   59  1] ->  455 [ C   HIS   59  1]cr  1.5185 - Calc  
+Bond  65. Atoms  453 [ N   HIS   59  1] ->  454 [ CA  HIS   59  1]ce  1.4626 - Calc  
+Bond  66. Atoms  451 [ CB  SER   58  1] ->  452 [ OG  SER   58  1]ce  1.4289 - Calc  
+Bond  67. Atoms  449 [ C   SER   58  1] ->  450 [ O   SER   58  1]ce  1.2358 d Calc  
+Bond  68. Atoms  448 [ CA  SER   58  1] ->  451 [ CB  SER   58  1]cr  1.5037 - Calc  
+Bond  69. Atoms  448 [ CA  SER   58  1] ->  449 [ C   SER   58  1]cr  1.5186 - Calc  
+Bond  70. Atoms  447 [ N   SER   58  1] ->  448 [ CA  SER   58  1]ce  1.4408 - Calc  
+Bond  71. Atoms  445 [ CG  PRO   57  1] ->  446 [ CD  PRO   57  1]c   1.5084 - Calc  
+Bond  72. Atoms  444 [ CB  PRO   57  1] ->  445 [ CG  PRO   57  1]c   1.5137 - Calc  
+Bond  73. Atoms  442 [ C   PRO   57  1] ->  443 [ O   PRO   57  1]ce  1.2323 d Calc  
+Bond  74. Atoms  441 [ CA  PRO   57  1] ->  444 [ CB  PRO   57  1]c   1.5012 - Calc  
+Bond  75. Atoms  441 [ CA  PRO   57  1] ->  442 [ C   PRO   57  1]cr  1.5162 - Calc  
+Bond  76. Atoms  440 [ N   PRO   57  1] ->  446 [ CD  PRO   57  1]c   1.4691 - Calc  
+Bond  77. Atoms  440 [ N   PRO   57  1] ->  441 [ CA  PRO   57  1]c   1.4646 - Calc  
+Bond  78. Atoms  437 [ CB  VAL   56  1] ->  439 [ CG2 VAL   56  1]ce  1.4908 - Calc  
+Bond  79. Atoms  437 [ CB  VAL   56  1] ->  438 [ CG1 VAL   56  1]ce  1.4801 - Calc  
+Bond  80. Atoms  435 [ C   VAL   56  1] ->  436 [ O   VAL   56  1]ce  1.2365 d Calc  
+Bond  81. Atoms  434 [ CA  VAL   56  1] ->  437 [ CB  VAL   56  1]cr  1.6289 - Calc  
+Bond  82. Atoms  434 [ CA  VAL   56  1] ->  435 [ C   VAL   56  1]cr  1.5130 - Calc  
+Bond  83. Atoms  433 [ N   VAL   56  1] ->  434 [ CA  VAL   56  1]ce  1.4423 - Calc  

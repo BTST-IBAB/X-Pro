@@ -1,0 +1,27 @@
+ligplot.nnb output:
+
+   Atom 1               Atom 2        Distance
+LEU 1   61   N       MET 1   60   CG     3.21
+LEU 1   61   N       MET 1   60   CB     3.15
+GLY 1   64   CA      MET 1   60   O      3.49
+GLY 1   63   C       MET 1   60   O      3.72
+GLY 1   63   CA      MET 1   60   O      3.88
+LEU 1   61   C       MET 1   60   O      2.79
+LEU 1   61   CA      MET 1   60   O      2.65
+VAL 1   62   N       MET 1   60   C      3.35
+LEU 1   61   CB      MET 1   60   C      3.62
+LEU 1   61   O       MET 1   60   C      3.74
+LEU 1   61   C       MET 1   60   C      2.97
+LEU 1   61   CA      MET 1   60   CA     3.80
+MET 1   60   N       HIS 1   59   CD2    3.60
+MET 1   60   N       HIS 1   59   CG     3.45
+MET 1   60   N       HIS 1   59   CB     3.37
+MET 1   60   C       HIS 1   59   O      3.08
+MET 1   60   CA      HIS 1   59   O      2.72
+MET 1   60   CB      HIS 1   59   C      3.70
+MET 1   60   O       HIS 1   59   C      3.13
+MET 1   60   C       HIS 1   59   C      3.05
+MET 1   60   CA      HIS 1   59   CA     3.80
+MET 1   60   N       SER 1   58   C      3.33
+MET 1   60   CB      PRO 1   57   O      3.61
+MET 1   60   CG      VAL 1   40   CG2    3.56

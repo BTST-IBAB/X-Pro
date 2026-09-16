@@ -1,0 +1,73 @@
+
+Edit the parameter file, 
+<font color=blue><B>ligplus.par</B></font>, which you wil find in the
+<font color=blue><B>lib/params</B></font> subdirectory of the
+directory containing the
+<font color=blue><B>ligplus.jar</B></font> file.
+
+The parameters you will need to edit to customize
+<B>LIGPLOT<SUP>+</SUP></B> for your system are the following:
+
+<H3>PDB directories and ftp address</H3>
+
+PDB files are most conveniently identified simply by the 4-character
+PDB code or identifier. If your system contains one or more locations
+where PDB files are stored, you can define a "template" path which
+will allow <B>LIGPLOT<SUP>+</SUP></B> to find the relevant PDB file
+from its 4-character code alone.
+
+<P>
+Alternatively, if you are connected to the internet when you run
+<B>LIGPLOT<SUP>+</SUP></B>, the required file can be retrieved by ftp
+from a given ftp site.
+
+<P>
+The parameters describing the location of PDB files are named:
+
+<font color=red><B>PDB_DIR</B></font>,
+<font color=red><B>PDB_DIR1</B></font>,
+<font color=red><B>PDB_DIR2</B></font>, etc, and should be entered in
+the order they are to be searched by the program. Any number of
+directories can be defined here.
+
+<P>
+In each case, the template describing the location of the file
+represents the 4 characters of the PDB code as <font
+color=green><B>abcd</B></font>. These appear in the template within
+square brackets.
+
+<P>
+For example, the template
+
+<P>
+<font color=green><B>C:/roman/pdbsum/pdb/pdb[abcd].ent</B></font>
+
+<P>
+
+
+
+<P>
+<B>Local PDB files</B>
+
+
+<H3>The Het Group dictionary</H3>
+
+<B>LIGPLOT<SUP>+</SUP></B> gets its information about ligand molecules
+from the Het Group Dictionary. This defines the atom names,
+connectivities and bond orders of every Het Group in the PDB. An old
+(June 2009) version of this dictionary is supplied with the
+program. However, you might with to keep this file updated by
+periodically downloading from the wwPDB at:
+
+????????????
+
+Simply overwrite the file in the 
+
+<P>
+Alternatively, change the path of
+<font color=red><B>HET_GROUP_DICTIONARY</B></font> from
+<font color=green><B>lib/data/components.cif</B></font> to the
+absolute path on your system where a regularly-updated version of this
+file resiudes.
+
+

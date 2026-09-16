@@ -1,0 +1,13 @@
+mutated
+
+                                             Hydrogen bonds  Non-bonded
+               Interacting residues          M-M   S-S   M-S  contacts
+          ------------------------------     ---   ---   ---    -----  
+Residues: [LEU   61  1] -> [MET   60  1]      0     0     0        8
+Residues: [GLY   64  1] -> [MET   60  1]      1     0     0        1
+Residues: [GLY   63  1] -> [MET   60  1]      0     0     0        2
+Residues: [VAL   62  1] -> [MET   60  1]      0     0     0        1
+Residues: [MET   60  1] -> [HIS   59  1]      0     0     0        9
+Residues: [MET   60  1] -> [SER   58  1]      0     0     0        1
+Residues: [MET   60  1] -> [PRO   57  1]      1     0     0        1
+Residues: [MET   60  1] -> [VAL   40  1]      0     0     0        1

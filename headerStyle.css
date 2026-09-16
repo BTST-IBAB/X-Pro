@@ -1,0 +1,272 @@
+body{
+    /* background-color: #dbeef4; */
+    font-size: 12px;
+    font-family: "Verdana", "sans-serif";
+    background-image: url('img/protein_structure_image.png');
+    /* background-size: cover; */
+    /* background-repeat: no-repeat round; */
+}
+
+
+.banner{
+    color: white;
+    border-radius: 5px 5px 0px 0px;
+    background-image: linear-gradient(to right, #175161 , #1f728a, #2789a5, #17809E);
+}
+
+.banner > div{
+    font-family: Patronum;
+    margin-left: 2.2em;
+}
+
+/* .footer {
+    background-image: linear-gradient(to right, #175161, #1f728a, #2789a5, #17809E);
+} */
+
+.toolTitle:hover{
+    cursor: pointer;
+}
+
+.footerContent{
+    padding-top: 1.2rem;
+    height: 100px;
+    background-image: linear-gradient(to right, #175161, #1f728a, #2789a5, #17809E);
+    color: white;
+    border-radius: 0px 0px 5px 5px;
+}
+
+.logo {
+    display: inline-block;
+    font-size: 32px;
+    transform: scale(1, 1.2);
+    font-family: "verdana", "sans-serif";
+    font-weight: 700;
+    font-variant: petite-caps;
+    letter-spacing: .1em;
+    text-shadow: 1px 1px 1px #919191,
+        1px 2px 1px #919191,
+        1px 3px 1px #919191,
+        /* 1px 4px 3px #919191, */
+        /* 3px 5px 4px #919191,  */
+        1px 30px 60px rgba(16, 16, 16, 0.4);
+}
+
+.tagLine{
+    font-size: 20px;
+    letter-spacing: .06em;
+    text-shadow: 1px 1px 1px #919191,
+        1px 2px 1px #919191,
+        /* 1px 3px 1px #919191, */
+        1px 30px 60px rgba(16, 16, 16, 0.4);
+}
+
+.instiLogo{
+    display: -webkit-box;
+}
+
+.instiFullName{
+    font-size: 20px;
+    letter-spacing: .08em;
+}
+
+.nbar {
+    font-size: 13px;
+    display: block;
+    list-style: none inside;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background: #00b3b3;
+    background-image: linear-gradient(to right, #30839c, #3693b0, #3ca4c3, #4fadc9);
+}
+
+.nbar li {
+    display: inline-block;
+    position: relative;
+    /* background: #00b3b3; */
+}
+
+.nbar li a {
+    display: block;
+    padding: 0;
+    text-decoration: none;
+    width: 120px;
+    line-height: 35px;
+    color: white;
+}
+
+.nbar li:hover {
+    background: #246275;
+}
+
+.nbar ul {
+    position: absolute;
+    padding: 0;
+    left: 0;
+    display: none;
+}
+
+.nbar li:hover ul {
+    display: block;
+}
+
+.main{
+    border: medium;
+    border-radius: 10px;
+    border-color: #000;
+    background-color: white;
+    /* height: 800px; */
+    padding: 5px;
+}
+
+article{
+    padding: 20px;
+    float: left;
+    width: 800px;
+    text-align: justify;
+}
+
+article h4{
+    font-size: 20px;
+    text-align: left;
+}
+
+article p{
+    font-size: 14px;
+    line-height: 2.2em;
+}
+
+aside{
+    width: 20%;
+    float: right;
+    font-size: larger;
+}
+
+.hkeyW label {
+    font-size: 13px;
+}
+
+.knwMut, .pdbMutation, .LabelInputdiff{
+    display: -webkit-box;
+}
+
+.btn_smt {
+    font-size: 12px;
+    padding: 1px 6px;
+}
+
+.analbtn, .rnEG, .resetVal{
+    font-weight: 600;
+    border: groove;
+}
+
+/* Mid Page */
+
+.timerD {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.timerD th,
+.timerD td {
+    text-align: left;
+    padding: 8px;
+}
+
+.timerD tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-ellipsis div {
+    position: absolute;
+    top: 33px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #000;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(24px, 0);
+    }
+}
+
+/* AnnoDUF */
+
+.btn_smt {
+    font-size: 12px;
+    padding: 1px 6px;
+}
+
+.resetVal{
+    font-weight: 600;
+    border: groove;
+}
+
+.helpSymbol {
+    color:#fff;
+    background-color:#feb22a;
+    width:12px;
+    height:12px;
+    display:inline-block;
+    border-radius:100%;
+    font-size:10px;
+    text-align:center;
+    text-decoration:none;
+    -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+}
