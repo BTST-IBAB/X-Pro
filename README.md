@@ -36,51 +36,43 @@ Point mutations in proteins can alter residue geometry, disrupt hydrogen bonds, 
 
 ## Workflow
 
-### Step 1 — Provide the wild-type structure
+### Step 1 — Provide the wild-type structure and specify the mutation
 
-Upload a `.pdb` or `.cif` file, or enter a PDB ID to fetch the structure automatically from the RCSB Protein Data Bank.
+Upload a `.pdb` or `.cif` file, or enter a PDB ID to fetch the structure automatically from the RCSB Protein Data Bank. Select the chain ID, residue number, and target amino acid.
 
-![Structure input](img/X-Pro_help/write_upload_pdbID.png)
-
----
-
-### Step 2 — Specify the mutation
-
-Select the chain ID, residue number, and target amino acid. The wild-type residue is identified automatically.
-
-![Mutation input](img/X-Pro_help/Inputs_2.png)
+![X-Pro input form](img/X-Pro_help/01_input_form.png)
 
 ---
 
-### Step 3 — Review the mutational summary
+### Step 2 — Review the mutational summary
 
-A summary table lists the wild-type structure, chain, residue position, substitution, and all rotamers identified by PyMOL.
+A summary table lists the wild-type structure ID, chain, residue number, substitution, and all low-energy rotamers identified by PyMOL.
 
-![Mutation summary](img/X-Pro_help/Summary.png)
+![Result summary](img/X-Pro_help/02_result_summary.png)
 
 ---
 
-### Step 4 — PyMOL structural comparison
+### Step 3 — PyMOL structural comparison
 
 Side-by-side PyMOL images show the residue environment before and after the substitution.
 
-![Before and after mutation](img/X-Pro_help/beforeAfter_Mutation.png)
+![PyMOL before and after mutation](img/X-Pro_help/03_pymol_visualization.png)
 
 ---
 
-### Step 5 — LigPlot+ interaction visualisation
+### Step 4 — LigPlot+ interaction visualisation
 
-LigPlot+ diagrams highlight hydrogen bonds and hydrophobic contacts at the mutation site for both the wild-type and the mutant.
+LigPlot+ diagrams highlight hydrogen bonds and hydrophobic contacts at the mutation site for both the wild-type and the mutant. Interactions gained and lost are listed below each diagram.
 
-![LigPlot interactions](img/X-Pro_help/PrePost_Interaction_LigPlot.png)
+![LigPlot interactions](img/X-Pro_help/04_ligplot_visualization.png)
 
 ---
 
-### Step 6 — Interaction summary table
+### Step 5 — Interaction summary table
 
-A comparative table records the number of interacting residues, hydrogen bonds formed, and non-bonded contacts (M = main chain, S = side chain) before and after mutation.
+A comparative table records hydrogen bonds and non-bonded contacts (M = main chain, S = side chain) for every interacting residue before and after the mutation.
 
-![Interaction summary table](img/X-Pro_help/PrePost_SummaryTable.png)
+![Interaction summary table](img/X-Pro_help/05_interaction_table.png)
 
 The mutated structure is available for download as a `.pdb` file for further analysis.
 
