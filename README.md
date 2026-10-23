@@ -282,12 +282,12 @@ If you use X-Pro in your research, please cite the tool and its integrated compo
 
 ## Authors
 
-- Aman Vishwakarma
-- Anurag N
 - Nadimpally Sai Tharun Goud
+- Aman Vishwakarma
+- Anurag Neelakanteswara
 - Chandreyee Nandi
 - Sudha Srinivasan
-- S. Thiyagarajan
+- Saravanamuthu Thiyagarajan
 
 **Institution:** Institute of Bioinformatics and Applied Biotechnology (IBAB), Bengaluru, India
 
