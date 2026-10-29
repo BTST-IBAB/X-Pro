@@ -264,8 +264,8 @@ The built-in example (click **Run Example** on the homepage) loads a pre-compute
 If you use X-Pro in your research, please cite the tool and its integrated components:
 
 **X-Pro**
-> Aman Vishwakarma, Anurag N, Nadimpally Sai Tharun Goud, Chandreyee Nandi, Sudha Srinivasan, S. Thiyagarajan.
-> *X-Pro: A web-based tool for structural analysis of point mutations.*
+> Nadimpally Sai Tharun Goud, Aman Vishwakarma, Anurag Neelakanteswara, Chandreyee Nandi, Sudha Srinivasan, Saravanamuthu Thiyagarajan.
+> *X-Pro: a web-based tool for structural analysis of point mutations on protein structures.*
 > Institute of Bioinformatics and Applied Biotechnology (IBAB), Bengaluru.
 > [https://bts.ibab.ac.in/X-Pro.php](https://bts.ibab.ac.in/X-Pro.php)
 
