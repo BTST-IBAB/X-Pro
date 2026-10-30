@@ -380,6 +380,75 @@
         .progress-steps li.completed {
             color: #4caf50;
         }
+        .method-radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .method-radio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: normal;
+            cursor: pointer;
+            margin: 0;
+        }
+        .method-radio input[type="radio"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+        .method-radio input[type="radio"]:disabled,
+        .method-radio input[type="radio"]:disabled + span {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .info-tip {
+            position: relative;
+            display: inline-block;
+            margin-left: 6px;
+            vertical-align: middle;
+            outline: none;
+        }
+        .info-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            line-height: 14px;
+            border-radius: 50%;
+            background: #0b3a4d;
+            color: #fff;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: Georgia, serif;
+            cursor: help;
+        }
+        .info-tip-text {
+            display: none;
+            position: absolute;
+            top: 22px;
+            left: -10px;
+            width: 270px;
+            padding: 10px 12px;
+            background: #0b3a4d;
+            color: #fff;
+            font-size: 11px;
+            font-weight: normal;
+            font-style: normal;
+            line-height: 1.5;
+            text-align: left;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 1000;
+        }
+        .info-tip:hover .info-tip-text,
+        .info-tip:focus .info-tip-text,
+        .info-tip:focus-within .info-tip-text {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -479,37 +548,51 @@
                         <label for="mutation">Mutation:</label>
                         <select class="form-control" name="Mutation" id="mutation" <?= !$showMutationForm ? 'disabled' : '' ?>>
                             <option value="">Select Mutation</option>
-                            <option value="Ala">Alanine (Ala)</option>
-                            <option value="Arg">Arginine (Arg)</option>
-                            <option value="Asn">Asparagine (Asn)</option>
-                            <option value="Asp">Aspartic acid (Asp)</option>
-                            <option value="Cys">Cysteine (Cys)</option>
-                            <option value="Gln">Glutamine (Gln)</option>
-                            <option value="Glu">Glutamic acid (Glu)</option>
-                            <option value="Gly">Glycine (Gly)</option>
-                            <option value="His">Histidine (His)</option>
-                            <option value="Ile">Isoleucine (Ile)</option>
-                            <option value="Leu">Leucine (Leu)</option>
-                            <option value="Lys">Lysine (Lys)</option>
-                            <option value="Met">Methionine (Met)</option>
-                            <option value="Phe">Phenylalanine (Phe)</option>
-                            <option value="Pro">Proline (Pro)</option>
-                            <option value="Ser">Serine (Ser)</option>
-                            <option value="Thr">Threonine (Thr)</option>
-                            <option value="Trp">Tryptophan (Trp)</option>
-                            <option value="Tyr">Tyrosine (Tyr)</option>
-                            <option value="Val">Valine (Val)</option>
+                            <option value="Ala">Alanine (Ala, A)</option>
+                            <option value="Arg">Arginine (Arg, R)</option>
+                            <option value="Asn">Asparagine (Asn, N)</option>
+                            <option value="Asp">Aspartic acid (Asp, D)</option>
+                            <option value="Cys">Cysteine (Cys, C)</option>
+                            <option value="Gln">Glutamine (Gln, Q)</option>
+                            <option value="Glu">Glutamic acid (Glu, E)</option>
+                            <option value="Gly">Glycine (Gly, G)</option>
+                            <option value="His">Histidine (His, H)</option>
+                            <option value="Ile">Isoleucine (Ile, I)</option>
+                            <option value="Leu">Leucine (Leu, L)</option>
+                            <option value="Lys">Lysine (Lys, K)</option>
+                            <option value="Met">Methionine (Met, M)</option>
+                            <option value="Phe">Phenylalanine (Phe, F)</option>
+                            <option value="Pro">Proline (Pro, P)</option>
+                            <option value="Ser">Serine (Ser, S)</option>
+                            <option value="Thr">Threonine (Thr, T)</option>
+                            <option value="Trp">Tryptophan (Trp, W)</option>
+                            <option value="Tyr">Tyrosine (Tyr, Y)</option>
+                            <option value="Val">Valine (Val, V)</option>
                         </select>
                     </div>
 
                     <!-- Mutagenesis Method Selection -->
                     <div class="form-group">
-                        <label for="mutagenesis-method">Mutagenesis Method:</label>
-                        <select class="form-control" name="MutagenesisMethod" id="mutagenesis-method" <?= !$showMutationForm ? 'disabled' : '' ?>>
-                            <option value="">Select Method</option>
-                            <option value="pymol">1. PyMOL</option>
-                            <option value="modeller">2. Modeller (recommended)</option>
-                        </select>
+                        <label>Mutagenesis Method:
+                            <span class="info-tip" tabindex="0" aria-label="Difference between Modeller and PyMOL">
+                                <span class="info-icon">i</span>
+                                <span class="info-tip-text" role="tooltip">
+                                    <strong>Modeller</strong> builds the mutant structure by comparative modelling and optimises the mutated side chain together with its local environment (recommended for standard amino acids).<br><br>
+                                    <strong>PyMOL</strong> uses its Mutagenesis tool to place a side-chain rotamer from a rotamer library onto the existing backbone, without energy optimisation of the surroundings.<br><br>
+                                    <strong>Hint:</strong> use PyMOL if the site of mutation has a non-standard amino acid.
+                                </span>
+                            </span>
+                        </label>
+                        <div class="method-radio-group">
+                            <label class="method-radio" for="method-modeller">
+                                <input type="radio" name="MutagenesisMethod" id="method-modeller" value="modeller" checked <?= !$showMutationForm ? 'disabled' : '' ?>>
+                                <span> Modeller (recommended)</span>
+                            </label>
+                            <label class="method-radio" for="method-pymol">
+                                <input type="radio" name="MutagenesisMethod" id="method-pymol" value="pymol" <?= !$showMutationForm ? 'disabled' : '' ?>>
+                                <span> PyMOL</span>
+                            </label>
+                        </div>
                     </div>
                     
                     <div class="button-group">
@@ -641,7 +724,8 @@
         const chainID = document.getElementById('chain-ID').value;
         const residueNum = document.getElementById('residue').value;
         const mutation = document.getElementById('mutation').value;
-        const mutagenesisMethod = document.getElementById('mutagenesis-method').value;
+        const methodChecked = document.querySelector('input[name="MutagenesisMethod"]:checked');
+        const mutagenesisMethod = methodChecked ? methodChecked.value : '';
         const pdbID = document.getElementById('storePDB_ID').value;
         const folderID = document.getElementById('folderID').value;
         const wildType = document.getElementById('wildType').value;
