@@ -1,6 +1,6 @@
 # X-Pro
 
-**X-Pro** is a web-based computational tool for structural analysis of point mutations in proteins. It identifies potential rotameric configurations, detects interaction gains and losses at the mutation site, and integrates multiple stability predictors — all through a streamlined web interface.
+**X-Pro** is a web-based computational tool for structural analysis of point mutations in proteins. It identifies potential rotameric configurations, detects interaction gains and losses at the mutation site, generates a plain-language structural interpretation with a locally hosted language model, and integrates multiple stability predictors — all through a streamlined web interface.
 
 **Live server:** [https://bts.ibab.ac.in/X-Pro.php](https://bts.ibab.ac.in/X-Pro.php)
 
@@ -13,7 +13,8 @@ Point mutations in proteins can alter residue geometry, disrupt hydrogen bonds, 
 - Generating the mutant structure using **PyMOL** (mutagenesis wizard) or **Modeller** (recommended)
 - Identifying all low-energy rotamers for the mutant residue
 - Running **LigPlot+** on both wild-type and mutant structures to map interaction networks
-- Comparing pre- and post-mutation interactions (hydrogen bonds, non-bonded contacts)
+- Comparing pre- and post-mutation interactions (hydrogen bonds, non-bonded contacts) into a single canonical **interaction summary**
+- Turning that interaction summary into a four-paragraph structural interpretation using a **local Ollama model** (no data leaves the server)
 - Querying external stability predictors: **FoldX**, **DynaMut2**, **DUET**, **mCSM**, **SDM**, and **HOPE**
 - Presenting results as tables, diagrams, and downloadable structure files
 
@@ -27,10 +28,82 @@ Point mutations in proteins can alter residue geometry, disrupt hydrogen bonds, 
 | Mutagenesis engines | PyMOL mutagenesis wizard · Modeller comparative modelling |
 | Rotamer analysis | All low-energy rotamers enumerated and listed |
 | Interaction analysis | LigPlot+ for pre/post-mutation hydrogen bonds and hydrophobic contacts |
+| Interaction summary | One canonical Gained / Lost / Retained record set, exported as JSON and CSV |
+| AI interpretation | Four-paragraph structural write-up generated on-server by a local Ollama model (`phi4-mini-local`) |
 | Stability prediction | FoldX · DynaMut2 · DUET · mCSM · SDM · HOPE |
 | Visualisation | PyMOL-rendered PNG images of wild-type and mutant structures |
-| Output formats | Tabular interaction summary · downloadable mutant PDB · PNG images |
+| Output formats | Tabular interaction summary · AI interpretation text · downloadable mutant PDB · PNG images |
 | Web interface | PHP + Bootstrap 4 — no client-side installation required |
+
+---
+
+## Architecture
+
+X-Pro is a three-tier application: a PHP web layer in the Apache document root, a Python analysis layer under `pointMutationScript/`, and a per-job directory under `fileUpload/` that acts as the only channel between them. The browser never talks to Python directly — every Python invocation is shelled out by PHP, and every result is read back from files on disk.
+
+```mermaid
+flowchart TB
+    subgraph Browser["Browser-facing PHP pages"]
+        A["X-Pro.php<br/>structure input · chain · residue<br/>mutation · mutagenesis method"]
+        P["X-Pro-Progress.php<br/>launches the job, polls 4 stages"]
+        R["X-ProResult.php<br/>summary · 3D viewer · LigPlot+<br/>interaction table · AI panel"]
+    end
+
+    subgraph Endpoints["Supporting PHP"]
+        H["comparison_helpers.php<br/>interaction table rendering"]
+        G["xpro_generate_summary.php<br/>AJAX endpoint for the AI summary"]
+    end
+
+    subgraph Py["Python layer — pointMutationScript/"]
+        X["xpro.py<br/>pipeline orchestrator"]
+        D["download_pdbFile.py<br/>RCSB fetch"]
+        M["point_mutator.py<br/>PyMOL / Modeller"]
+        L["LigPlus.jar<br/>HBPLUS + LigPlot+"]
+        I["interaction_comparison.py<br/>canonical comparison"]
+        S["xpro_summarise.py<br/>prompt builder"]
+    end
+
+    subgraph Store["Per-job store — fileUpload/&lt;job_id&gt;/"]
+        PG["progress_*.txt"]
+        O1["output_files/mutated.pdb · *.png"]
+        O2["output_files/*_ligplot.hhb / .nnb"]
+        O3["output_files/interaction_comparison_&lt;PDB&gt;.json / .csv"]
+        O4["output_files/summary.txt"]
+    end
+
+    OL["Ollama · localhost:11434<br/>phi4-mini-local"]
+    EXT["Pathogenicity predictors<br/>FoldX · DynaMut2 · DUET<br/>mCSM · SDM · HOPE"]
+
+    A -->|"Analyze"| P
+    P -->|"launch background job"| X
+    X --> D --> M --> L --> I
+    X --> PG
+    PG -.->|"poll"| P
+    P -->|"redirect on completion"| R
+    M --> O1
+    L --> O2
+    I --> O3
+    O1 --> R
+    O2 --> R
+    O3 --> R
+    H --> R
+    R -->|"Generate Summary (AJAX)"| G
+    G -->|"read canonical JSON"| O3
+    G -->|"exec python3"| S
+    S -->|"POST /api/generate"| OL
+    OL -->|"4-paragraph interpretation"| S
+    S --> O4
+    O4 -->|"JSON response"| R
+    R -->|"open predictions page"| EXT
+```
+
+**Request flow for the AI summary**
+
+1. `X-ProResult.php` renders the Generate Summary panel only when `interaction_comparison_<PDB>.json` exists for the job.
+2. The browser POSTs `job_id`, `pdb_id`, `hint` and `disease` to `xpro_generate_summary.php`.
+3. That endpoint validates the inputs, locates the canonical JSON, and shells out to `xpro_summarise.py` with `--auto`, `--out`, `--model`, and optionally `--disease` and `--user-hint`.
+4. `xpro_summarise.py` parses the canonical records, builds a constrained prompt, and calls the local Ollama server (proxy bypassed for localhost).
+5. The generated text is written to `output_files/summary.txt` and returned as JSON, which the page renders paragraph by paragraph with a download link.
 
 ---
 
@@ -42,7 +115,8 @@ The homepage presents two panels: **Step 1** (structure input) and **Step 2** (m
 
 - Enter a **PDB ID** to auto-fetch from the RCSB Protein Data Bank, or click **"Click to Upload .pdb/.cif File"** to supply a local structure file.
 - Click **"Validate and Prepare Input"** — the structure is downloaded and the Step 2 fields populate automatically.
-- Select the **Chain ID**, **Residue Number** (wild-type residue name is shown automatically), target **Mutation**, and **Mutagenesis Method** (PyMOL or Modeller — Modeller recommended).
+- Select the **Chain ID**, **Residue Number** (wild-type residue name is shown automatically) and the target **Mutation**. The mutation list shows both the three-letter and one-letter code for each amino acid, e.g. *Alanine (Ala, A)*.
+- Choose the **Mutagenesis Method** from the two radio buttons — **Modeller** is pre-selected as the recommended engine, **PyMOL** is the alternative. The **ⓘ** tooltip next to the label explains the difference: Modeller rebuilds the mutant by comparative modelling and optimises the mutated side chain together with its local environment, while PyMOL places a rotamer from its library onto the existing backbone without optimising the surroundings. Use PyMOL when the mutation site contains a non-standard amino acid.
 - Click **"Analyze"** to submit the job.
 
 Use **"Run Example"** to instantly view a pre-computed result, or **"Reset"** to clear all fields.
@@ -72,7 +146,7 @@ Each diagram can be downloaded individually.
 
 ---
 
-### Step 3 — Interaction changes table
+### Step 3 — Interaction summary (interaction changes table)
 
 Below the LigPlot diagrams, a filterable **Interaction Changes** table lists every residue pair and its bond-level detail across both structures. Each row shows the residue pair, WT and mutant atom names, distances, interaction type, contact counts, and a **Gained / Lost / Retained** status badge.
 
@@ -80,9 +154,61 @@ Filter controls allow narrowing by status (Gained, Lost, Retained) and by intera
 
 ![Interaction changes table](img/X-Pro_help/04_interaction_table.png)
 
+#### A short note on the interaction summary
+
+The interaction summary is the single source of truth for everything downstream on the result page — the table, the LigPlot annotations, and the AI interpretation all read from it rather than re-deriving the chemistry independently.
+
+It is produced by `pointMutationScript/interaction_comparison.py`, which parses the four LigPlot+ output files (`.hhb` hydrogen bonds and `.nnb` non-bonded contacts, for both the wild-type and the mutant structure), matches the two interaction networks residue-pair by residue-pair, and writes one *canonical* record set:
+
+| Field | Meaning |
+|---|---|
+| `interaction_class` | `hydrogen_bond` or `non_bonded_contact` |
+| `wt_residue_pair` / `mutant_residue_pair` | The interacting residues in each structure |
+| `wt_distance` / `mutant_distance` | Hydrogen bond lengths in Å |
+| `wt_contact_count` / `mutant_contact_count` | Number of contacting atom pairs |
+| `delta_contact_count` | Signed change in atom-pair count (mutant − WT) |
+| `result` | `Gained`, `Lost`, or `Retained` |
+
+Three facts are worth keeping in mind when reading it:
+
+- **`Retained` does not mean unchanged.** A retained pair can still shift its hydrogen bond length or gain and lose contacting atoms; the `delta_contact_count` column is what tells you by how much.
+- **Counts are atom pairs, not residue pairs.** "Rises from 3 to 8" means eight atom-to-atom contacts between the same two residues, not eight new neighbours.
+- **Warnings are part of the result.** Where LigPlot+ or the upstream structure imposes a limitation (missing atoms, altloc ambiguity, non-standard residues), the comparison records a warning that is shown above the table and should be read before trusting the row counts.
+
+The same record set is written to disk three ways: `interaction_comparison_<PDB>.json` (full, machine-readable), `interaction_comparison_<PDB>.csv` (flat, spreadsheet-friendly), and `ligplot_differences.txt` (a plain-text Gained/Lost/Retained digest).
+
 ---
 
-### Step 4 — Pathogenicity predictions
+### Step 4 — AI structural interpretation
+
+Directly below the interaction table, X-Pro offers a **Structural Interpretation** panel that turns the canonical interaction summary into readable prose. The panel appears only when the canonical JSON exists for the job.
+
+**Controls**
+
+| Control | Purpose |
+|---|---|
+| **Predicted Phenotype** | `BENIGN` or `DELETERIOUS` — your prior, passed to the model as a strong hint. The model is still instructed to follow it only where the structural data supports it. |
+| **Disease context** *(optional)* | Free text, pre-filled with the mutation and PDB ID. Supply a disease name (e.g. *Mucopolysaccharidosis IVA*) to have the interpretation framed in that context. |
+| **Generate Summary** | Fires the AJAX request; generation typically takes 30–60 seconds. |
+
+**What is generated**
+
+The model is constrained to exactly four paragraphs, in this order:
+
+1. **Classification of the substitution** — physicochemical nature of the wild-type and mutant residues (aliphatic/hydrophobic, aromatic, polar, acidic, basic), the relative size change, and the structural consequence that difference may introduce.
+2. **The wild-type residue** — its position, every contact it makes, and its hydrogen bonds with explicit Å distances.
+3. **What changes in the mutant** — hydrogen bonds retained (with new distances), lost and gained, plus how non-bonded contact counts moved, with exact atom-pair numbers.
+4. **The verdict** — opens with either *"This mutation is classified as BENIGN."* or *"This mutation is classified as DELETERIOUS."*, followed by the structural reasoning and a closing sentence summarising the net mechanism.
+
+The prompt forbids inventing residues, contacts or distances: everything the model writes is drawn from the canonical record set assembled in Step 3. The result is rendered paragraph by paragraph and can be downloaded as `<PDB>_<mutation>_interpretation.txt`.
+
+**Privacy and limitations**
+
+Generation runs entirely on the X-Pro server against a local [Ollama](https://ollama.com) instance (`phi4-mini-local` at `localhost:11434`) — no structure, mutation or disease text is sent to a third-party service. The interpretation is a reading aid, not evidence: it should always be checked against the interaction table above it and against the pathogenicity predictors in Step 5.
+
+---
+
+### Step 5 — Pathogenicity predictions
 
 A link on the result page opens the **Pathogenicity Predictions** page, which queries six external stability and effect predictors in parallel:
 
@@ -114,6 +240,7 @@ Results load progressively as each tool responds. A progress bar tracks completi
 | MySQL / MariaDB | 5.7+ |
 | PyMOL (open-source) | 2.x |
 | Modeller *(optional)* | 10.x |
+| Ollama *(optional — AI interpretation)* | 0.3+ |
 
 ### 1. Clone the repository
 
@@ -164,6 +291,58 @@ mkdir -p /var/www/html/fileUpload
 sudo chmod 777 /var/www/html/fileUpload/
 ```
 
+### 7. Set up Ollama for the AI interpretation *(optional)*
+
+The Structural Interpretation panel needs a local Ollama server. Skip this step if you do not want the AI summary — the rest of X-Pro works without it, and the panel simply reports that generation failed.
+
+```bash
+# Install Ollama (Linux)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull the base model
+ollama pull phi4-mini
+```
+
+`xpro_summarise.py` defaults to a model named `phi4-mini-local`. Create it from the base model so the tag resolves:
+
+```bash
+printf 'FROM phi4-mini\nPARAMETER temperature 0.2\n' > Modelfile
+ollama create phi4-mini-local -f Modelfile
+```
+
+Confirm the server is reachable from the machine Apache runs on:
+
+```bash
+ollama list                                  # phi4-mini-local should be listed
+curl http://localhost:11434/api/tags         # should return JSON
+```
+
+Notes for deployment:
+
+- The endpoint is hard-coded to `http://localhost:11434`. To use a different host or model, edit `--model` / add `--ollama` in `xpro_generate_summary.php`, or pass them when invoking `xpro_summarise.py` directly.
+- Behind a corporate proxy, `xpro_generate_summary.php` reads `PROXY_URL=` from `/etc/prokgs/proxy.conf` (falling back to `HTTPS_PROXY` / `HTTP_PROXY`) and sets `NO_PROXY=localhost,127.0.0.1` so the Ollama call is never proxied.
+- `python3 -m pip install requests` must be available to the Apache user — `xpro_summarise.py` uses it for the Ollama call.
+
+To generate an interpretation outside the web interface:
+
+```bash
+python3 pointMutationScript/xpro_summarise.py \
+  /var/www/html/fileUpload/<job_id>/output_files/interaction_comparison_<PDB>.json \
+  --model phi4-mini-local \
+  --protein "GALNS" \
+  --disease "Mucopolysaccharidosis IVA (Morquio A syndrome)"
+```
+
+| Option | Default | Purpose |
+|---|---|---|
+| `--model` | `phi4-mini-local` | Ollama model tag |
+| `--ollama` | `http://localhost:11434` | Ollama server URL |
+| `--protein` | read from JSON | Protein name used in the prose |
+| `--disease` | *none* | Disease context sentence |
+| `--out` | `summary.txt` beside the JSON | Output path |
+| `--auto` | off | Suppress progress output; write the file only |
+| `--user-hint` | auto-detected | Override the verdict hint derived from the interaction counts |
+
 ---
 
 ## Dependencies
@@ -172,10 +351,16 @@ sudo chmod 777 /var/www/html/fileUpload/
 
 ```
 biopython
-requests
+requests            # also used by xpro_summarise.py to call Ollama
 pymol-open-source   # or install PyMOL system-wide
 modeller            # optional — required for Modeller mutagenesis method
 ```
+
+### Local services
+
+| Service | Purpose | Required |
+|---|---|---|
+| Ollama (`phi4-mini-local` @ `localhost:11434`) | Generates the structural interpretation on-server | Optional |
 
 ### External tools integrated via API / web
 
@@ -199,6 +384,7 @@ X-Pro/
 ├── X-Pro_Example.php               # Pre-loaded example analysis (1BBT, Thr60Met)
 ├── X-Pro-Progress.php              # Job progress polling
 ├── comparison_helpers.php          # Interaction comparison utilities
+├── xpro_generate_summary.php       # AJAX endpoint — runs xpro_summarise.py, returns JSON
 ├── xpro_to_mutxplor.php            # Export bridge to MutXplor
 ├── header.php / footer.php         # Shared layout
 ├── connect.php                     # Database configuration (edit before deploy)
@@ -211,7 +397,8 @@ X-Pro/
 │   ├── xpro.py                     # Main orchestration script
 │   ├── point_mutator.py            # PyMOL / Modeller mutagenesis
 │   ├── automate_point_mutation.py  # Batch mutation driver
-│   ├── interaction_comparison.py   # Pre/post interaction diff
+│   ├── interaction_comparison.py   # Pre/post interaction diff (canonical summary)
+│   ├── xpro_summarise.py           # Builds the Ollama prompt and writes summary.txt
 │   ├── download_pdbFile.py         # RCSB PDB fetcher
 │   ├── structure_alignment.py      # Structure superposition
 │   ├── results_assets.py           # Output file generator
@@ -245,6 +432,8 @@ The built-in example (click **Run Example** on the homepage) loads a pre-compute
 
 ## Output Files
 
+All per-job outputs are written to `fileUpload/<job_id>/output_files/`.
+
 | File | Description |
 |---|---|
 | `not_mutated.png` | PyMOL image of the wild-type structure |
@@ -256,6 +445,10 @@ The built-in example (click **Run Example** on the homepage) loads a pre-compute
 | `altered_ligplot.nnb` | LigPlot+ non-bonded contact table (mutant) |
 | `altered_ligplot.png` | LigPlot+ interaction diagram (mutant) |
 | `altered_ligplot.csv` | Interaction summary as CSV (downloadable via "Interaction Summary" button) |
+| `interaction_comparison_<PDB>.json` | Canonical WT-vs-mutant interaction summary — the input to the AI interpretation |
+| `interaction_comparison_<PDB>.csv` | The same record set, flattened for spreadsheets |
+| `ligplot_differences.txt` | Plain-text Gained / Lost / Retained digest |
+| `summary.txt` | AI structural interpretation (written by `xpro_summarise.py`) |
 
 ---
 
@@ -299,3 +492,4 @@ If you use X-Pro in your research, please cite the tool and its integrated compo
 
 This software is made available for academic and non-commercial use.
 For commercial licensing or collaboration enquiries, contact the authors at IBAB.
+
