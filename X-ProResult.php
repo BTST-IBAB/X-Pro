@@ -90,7 +90,7 @@
         $alteredRst = [];
         if (file_exists($alteredFile)) {
             foreach (file($alteredFile) as $line) {
-                $alteredRst[] = str_getcsv($line, ",", "\"", "\\");
+                $alteredRst[] = str_getcsv($line, ',', '"', '\\');
             }
             if (count($alteredRst) > 0) {
                 array_shift($alteredRst); // Remove header row
@@ -100,7 +100,7 @@
         $mutatedRst = [];
         if (file_exists($mutatedFile)) {
             foreach (file($mutatedFile) as $line) {
-                $mutatedRst[] = str_getcsv($line, ",", "\"", "\\");
+                $mutatedRst[] = str_getcsv($line, ',', '"', '\\');
             }
             if (count($mutatedRst) > 0) {
                 array_shift($mutatedRst); // Remove header row
@@ -1120,6 +1120,399 @@
             </script>
         <?php endif; ?>
     </div>
+
+    <!-- Ollama Structural Interpretation Summary -->
+    <?php
+        $summary_file     = $upload_dir . "output_files/summary.txt";
+        $summary_text     = file_exists($summary_file) ? trim(file_get_contents($summary_file)) : null;
+        $canonical_json   = $upload_dir . "output_files/interaction_comparison_" . $pdbID . ".json";
+        $has_canonical    = file_exists($canonical_json);
+        $canonical_url    = str_replace('/var/www/html', '', $canonical_json);
+        $summary_url      = str_replace('/var/www/html', '', $summary_file);
+    ?>
+    <!-- Generate Summary Button + UI (shown when canonical JSON exists) -->
+    <?php if ($has_canonical): ?>
+    <style>
+        .xpro-gen-section  { max-width:1150px; margin:20px auto; padding:0 20px; }
+        .xpro-gen-panel    { background:#fff; border:1px solid #d7e1e5; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.07); }
+        .xpro-gen-controls { padding:18px 22px; display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; }
+        .xpro-gen-label    { font-size:12px; font-weight:bold; color:#175161; display:block; margin-bottom:5px; }
+        .xpro-gen-select   { padding:8px 12px; border:1px solid #afc0c6; border-radius:6px; font-size:13px; color:#222; background:#f9fbfc; }
+        .xpro-gen-input    { padding:8px 12px; border:1px solid #afc0c6; border-radius:6px; font-size:13px; color:#222; background:#f9fbfc; min-width:260px; }
+        .xpro-gen-btn      { padding:10px 26px; background:linear-gradient(135deg,#175161,#1f728a); color:#fff; border:none; border-radius:6px; font-size:13px; font-weight:bold; cursor:pointer; transition:all 0.2s; }
+        .xpro-gen-btn:hover{ opacity:0.9; transform:translateY(-1px); }
+        .xpro-gen-btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none; }
+        .xpro-gen-spinner  { display:none; align-items:center; gap:10px; padding:0 22px 18px; color:#175161; font-size:13px; }
+        .xpro-gen-spinner .spin{ width:18px; height:18px; border:3px solid #d7e1e5; border-top-color:#175161; border-radius:50%; animation:xpro-spin 0.8s linear infinite; }
+        @keyframes xpro-spin{ to{ transform:rotate(360deg); } }
+        .xpro-summary-badge{ display:inline-block; background:#175161; color:white; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:bold; margin-left:6px; }
+        .xpro-verdict-banner{ padding:14px 22px; font-size:15px; font-weight:bold; border-bottom:1px solid #d7e1e5; letter-spacing:0.4px; display:flex; align-items:center; gap:10px; }
+        .xpro-verdict-del  { background:#fdecea; color:#8e2d23; border-left:6px solid #c0392b; }
+        .xpro-verdict-ben  { background:#d4edda; color:#155724; border-left:6px solid #1e7e34; }
+        .xpro-verdict-unk  { background:#fff3cd; color:#856404; border-left:6px solid #d4a017; }
+        .xpro-summary-paragraphs{ padding:20px 24px; font-size:13px; line-height:1.85; color:#222; font-family:"Verdana",sans-serif; }
+        .xpro-para         { margin-bottom:16px; }
+        .xpro-para:last-child{ margin-bottom:0; }
+        .xpro-para-verdict-del{ background:#fef2f1; border-left:4px solid #c0392b; padding:14px 16px; border-radius:4px; color:#8e2d23; font-weight:600; }
+        .xpro-para-verdict-ben{ background:#eaf6ec; border-left:4px solid #1e7e34; padding:14px 16px; border-radius:4px; color:#155724; font-weight:600; }
+        .xpro-para-verdict-unk{ background:#fff8e6; border-left:4px solid #d4a017; padding:14px 16px; border-radius:4px; color:#856404; font-weight:600; }
+        .xpro-summary-footer{ background:#f5f8f9; border-top:1px solid #d7e1e5; padding:9px 18px; font-size:11px; color:#667b83; display:flex; justify-content:space-between; align-items:center; }
+        .xpro-result-box   { display:none; }
+        .xpro-error-box    { display:none; background:#fdecea; color:#8e2d23; padding:14px 20px; font-size:13px; border-top:1px solid #f5c6cb; }
+    </style>
+
+    <div class="xpro-gen-section">
+        <div class="headSummary">
+            <strong>Structural Interpretation</strong>
+            <span class="xpro-summary-badge">Local Ollama &mdash; phi4-mini</span>
+        </div>
+        <div class="xpro-gen-panel">
+
+            <!-- Controls -->
+            <div class="xpro-gen-controls">
+                <div>
+                    <label class="xpro-gen-label" for="verdictHint">Predicted Phenotype</label>
+                    <select class="xpro-gen-select" id="verdictHint">
+                        <option value="benign">&#10004; BENIGN</option>
+                        <option value="deleterious">&#9888; DELETERIOUS</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="xpro-gen-label" for="diseaseInput">Disease context (optional)</label>
+                    <input class="xpro-gen-input" id="diseaseInput" type="text"
+                           placeholder="e.g. Mucopolysaccharidosis IVA (Morquio A syndrome)"
+                           value="<?= htmlspecialchars($wildRes . $residueNumber . $mutation . ' in ' . $pdbID) ?>">
+                </div>
+                <div>
+                    <button class="xpro-gen-btn" id="genSummaryBtn" onclick="generateSummary()">
+                        &#9654;&nbsp; Generate Summary
+                    </button>
+                </div>
+            </div>
+
+            <!-- Spinner -->
+            <div class="xpro-gen-spinner" id="genSpinner">
+                <div class="spin"></div>
+                <span>Generating interpretation via Ollama&hellip; this may take 30&ndash;60 seconds.</span>
+            </div>
+
+            <!-- Error -->
+            <div class="xpro-error-box" id="genError"></div>
+
+            <!-- Result -->
+            <div class="xpro-result-box" id="genResult">
+                <div class="xpro-summary-paragraphs" id="summaryParagraphs"></div>
+                <div class="xpro-summary-footer">
+                    <span>Auto-generated from the canonical interaction table via local Ollama (phi4-mini-local). Always verify against the interaction data above.</span>
+                    <a class="downloadButton" id="summaryDownload" style="font-size:11px;padding:4px 10px;">
+                        &#8681; Download
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+function generateSummary() {
+
+    var btn     = document.getElementById('genSummaryBtn');
+    var spinner = document.getElementById('genSpinner');
+    var result  = document.getElementById('genResult');
+    var errBox  = document.getElementById('genError');
+
+    var hint   = document.getElementById('verdictHint').value;
+    var disease = document.getElementById('diseaseInput').value.trim();
+
+    /* Disable button while generating */
+    btn.disabled = true;
+
+    /* Show spinner */
+    spinner.style.display = 'flex';
+
+    /* Hide previous result and error */
+    result.style.display = 'none';
+    errBox.style.display = 'none';
+
+
+    /* Prepare data to send to PHP */
+    var params = new URLSearchParams({
+        job_id:  '<?= htmlspecialchars($randNum) ?>',
+        pdb_id:  '<?= htmlspecialchars($pdbID) ?>',
+        hint:    hint,
+        disease: disease
+    });
+
+
+    /* Build the Ollama summary endpoint */
+    var summaryEndpoint = <?= json_encode(
+        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'
+            ? 'https'
+            : 'http')
+        . '://'
+        . $_SERVER['HTTP_HOST']
+        . '/xpro_generate_summary.php'
+    ) ?>;
+
+
+    /* Send request to xpro_generate_summary.php */
+    fetch(summaryEndpoint, {
+
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+
+        body: params.toString()
+
+    })
+
+
+    /* Read JSON response */
+    .then(function(response) {
+
+        if (!response.ok) {
+            throw new Error(
+                'HTTP error ' + response.status
+            );
+        }
+
+        return response.json();
+
+    })
+
+
+    /* Process Phi-4 response */
+    .then(function(data) {
+
+        /* Stop spinner */
+        spinner.style.display = 'none';
+
+        /* Re-enable button */
+        btn.disabled = false;
+
+
+        /* Check for PHP/Ollama error */
+        if (data.error) {
+
+            errBox.textContent = '⚠ ' + data.error;
+
+            errBox.style.display = 'block';
+
+            return;
+        }
+
+
+        /* Get generated summary */
+        var text = data.summary || '';
+
+
+        /* If no summary was returned */
+        if (!text.trim()) {
+
+            errBox.textContent =
+                '⚠ No summary was returned by Phi-4 mini.';
+
+            errBox.style.display = 'block';
+
+            return;
+        }
+
+
+        /*
+         * Split the generated text into paragraphs.
+         * Empty lines separate paragraphs.
+         */
+        var paras = text.split(/\n\s*\n/).filter(function(p) {
+
+            return p.trim().length > 0;
+
+        });
+
+
+        /*
+         * Build HTML for the summary.
+         *
+         * IMPORTANT:
+         * No paraClass.
+         * No verdict classification.
+         * No DELETERIOUS/BENIGN formatting.
+         */
+        var html = '';
+
+
+        paras.forEach(function(p) {
+
+            html +=
+                '<div class="xpro-para">' +
+                p.trim().replace(/\n/g, '<br>') +
+                '</div>';
+
+        });
+
+
+        /* Display generated summary */
+        document.getElementById(
+            'summaryParagraphs'
+        ).innerHTML = html;
+
+
+        /* Set download link */
+        var dl = document.getElementById(
+            'summaryDownload'
+        );
+
+
+        if (data.summary_url) {
+
+            dl.href = data.summary_url;
+
+        } else {
+
+            dl.href = '#';
+
+        }
+
+
+        dl.download =
+            '<?= htmlspecialchars(
+                $pdbID . '_' .
+                $wildRes .
+                $residueNumber .
+                $mutation
+            ) ?>_interpretation.txt';
+
+
+        /* Show result panel */
+        result.style.display = 'block';
+
+
+        /* Scroll to generated summary */
+        result.scrollIntoView({
+
+            behavior: 'smooth',
+
+            block: 'start'
+
+        });
+
+    })
+
+
+    /* Handle network/server errors */
+    .catch(function(error) {
+
+        /* Stop spinner */
+        spinner.style.display = 'none';
+
+        /* Re-enable button */
+        btn.disabled = false;
+
+
+        /* Show error */
+        errBox.textContent =
+            'Network error: ' + error.message;
+
+        errBox.style.display = 'block';
+
+
+        /* Also print error in browser console */
+        console.error(
+            'X-Pro Phi-4 summary error:',
+            error
+        );
+
+    });
+
+}
+</script>
+    <?php endif; ?>
+
+    <!-- Show previously generated summary if it exists and no canonical JSON -->
+    <?php if (!$has_canonical && $summary_text): ?>
+    <?php if ($summary_text): ?>
+    <style>
+        .xpro-summary-section { max-width: 1150px; margin: 20px auto; padding: 0 20px; }
+        .xpro-summary-box { background: #fff; border: 1px solid #d7e1e5; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.07); }
+        .xpro-summary-badge { display:inline-block; background:#175161; color:white; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:bold; margin-left:6px; }
+        .xpro-verdict-banner { padding:14px 22px; font-size:15px; font-weight:bold; border-bottom:1px solid #d7e1e5; letter-spacing:0.4px; display:flex; align-items:center; gap:10px; }
+        .xpro-verdict-del { background:#fdecea; color:#8e2d23; border-left:6px solid #c0392b; }
+        .xpro-verdict-ben { background:#d4edda; color:#155724; border-left:6px solid #1e7e34; }
+        .xpro-verdict-unk { background:#fff3cd; color:#856404; border-left:6px solid #d4a017; }
+        .xpro-summary-paragraphs { padding:20px 24px; font-size:13px; line-height:1.85; color:#222; font-family:"Verdana",sans-serif; }
+        .xpro-para { margin-bottom:16px; }
+        .xpro-para:last-child { margin-bottom:0; }
+        .xpro-para-verdict-del { background:#fef2f1; border-left:4px solid #c0392b; padding:14px 16px; border-radius:4px; color:#8e2d23; font-weight:600; }
+        .xpro-para-verdict-ben { background:#eaf6ec; border-left:4px solid #1e7e34; padding:14px 16px; border-radius:4px; color:#155724; font-weight:600; }
+        .xpro-para-verdict-unk { background:#fff8e6; border-left:4px solid #d4a017; padding:14px 16px; border-radius:4px; color:#856404; font-weight:600; }
+        .xpro-summary-footer { background:#f5f8f9; border-top:1px solid #d7e1e5; padding:9px 18px; font-size:11px; color:#667b83; display:flex; justify-content:space-between; align-items:center; }
+    </style>
+    <?php
+        // Detect verdict
+        $verdict        = null;
+        $verdict_class  = 'xpro-verdict-unk';
+        $verdict_label  = '? UNDETERMINED';
+        $para_class     = 'xpro-para-verdict-unk';
+
+        if (stripos($summary_text, 'classified as DELETERIOUS') !== false ||
+            stripos($summary_text, 'is DELETERIOUS') !== false) {
+            $verdict       = 'DELETERIOUS';
+            $verdict_class = 'xpro-verdict-del';
+            $verdict_label = '&#9888;&nbsp; DELETERIOUS';
+            $para_class    = 'xpro-para-verdict-del';
+        } elseif (stripos($summary_text, 'classified as BENIGN') !== false ||
+                  stripos($summary_text, 'is BENIGN') !== false) {
+            $verdict       = 'BENIGN';
+            $verdict_class = 'xpro-verdict-ben';
+            $verdict_label = '&#10004;&nbsp; BENIGN';
+            $para_class    = 'xpro-para-verdict-ben';
+        }
+
+        // Split into paragraphs on blank lines
+        $paragraphs = array_values(array_filter(
+            preg_split('/
+\s*
+/', $summary_text),
+            fn($p) => trim($p) !== ''
+        ));
+        $para_count = count($paragraphs);
+    ?>
+    <div class="xpro-summary-section">
+        <div class="headSummary">
+            <strong>Structural Interpretation</strong>
+            <span class="xpro-summary-badge">Generated by Local Ollama</span>
+        </div>
+        <div class="xpro-summary-box">
+
+            <!-- Verdict banner -->
+            <div class="xpro-verdict-banner <?= $verdict_class ?>">
+                <strong>Structural verdict: <?= $verdict_label ?></strong>
+            </div>
+
+            <!-- Paragraphs — last one highlighted as verdict -->
+            <div class="xpro-summary-paragraphs">
+                <?php foreach ($paragraphs as $idx => $para): ?>
+                    <?php $is_verdict = ($idx === $para_count - 1); ?>
+                    <div class="xpro-para <?= $is_verdict ? $para_class : '' ?>">
+                        <?= nl2br(htmlspecialchars(trim($para))) ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- Footer -->
+            <div class="xpro-summary-footer">
+                <span>Auto-generated from the canonical interaction table via a local Ollama model. Always verify against the interaction data above.</span>
+                <a class="downloadButton" style="font-size:11px;padding:4px 10px;"
+                   href="<?= htmlspecialchars(str_replace('/var/www/html', '', $summary_file)) ?>"
+                   download="<?= htmlspecialchars($pdbID.'_'.$wildRes.$residueNumber.$mutation.'_interpretation.txt') ?>">
+                   &#8681; Download
+                </a>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+    <?php endif; ?>
 
     <!-- Primary actions: start over, or move on to pathogenicity predictions -->
     <style>
