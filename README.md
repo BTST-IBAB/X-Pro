@@ -203,7 +203,7 @@ The prompt forbids inventing residues, contacts or distances: everything the mod
 
 **Privacy and limitations**
 
-Generation runs entirely on the X-Pro server against a local [Ollama](https://ollama.com) instance (`phi4-mini-local` at `localhost:11434`) — no structure, mutation or disease text is sent to a third-party service. The interpretation is a reading aid, not evidence: it should always be checked against the interaction table above it and against the pathogenicity predictors in Step 5.
+Generation runs entirely on the X-Pro server against a local [Ollama](https://ollama.com) instance (`phi4-mini-local`) — no structure, mutation or disease text is sent to a third-party service. The interpretation is a reading aid, not evidence: it should always be checked against the interaction table above it and against the pathogenicity predictors in Step 5.
 
 ---
 
