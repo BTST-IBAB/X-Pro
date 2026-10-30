@@ -335,7 +335,7 @@ python3 pointMutationScript/xpro_summarise.py \
 | Option | Default | Purpose |
 |---|---|---|
 | `--model` | `phi4-mini-local` | Ollama model tag |
-| `--ollama` | `http://localhost:11434` | Ollama server URL |
+| `--ollama` | `http://localhost:port` | Ollama server URL |
 | `--protein` | read from JSON | Protein name used in the prose |
 | `--disease` | *none* | Disease context sentence |
 | `--out` | `summary.txt` beside the JSON | Output path |
@@ -359,7 +359,7 @@ modeller            # optional — required for Modeller mutagenesis method
 
 | Service | Purpose | Required |
 |---|---|---|
-| Ollama (`phi4-mini-local` @ `localhost:11434`) | Generates the structural interpretation on-server | Optional |
+| Ollama (`phi4-mini-local` @ `localhost:port`) | Generates the structural interpretation on-server | Optional |
 
 ### External tools integrated via API / web
 
