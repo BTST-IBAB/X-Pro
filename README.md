@@ -154,7 +154,6 @@ Filter controls allow narrowing by status (Gained, Lost, Retained) and by intera
 
 ![Interaction changes table](img/X-Pro_help/04_interaction_table.png)
 
-#### A short note on the interaction summary
 
 The interaction summary is the single source of truth for everything downstream on the result page — the table, the LigPlot annotations, and the AI interpretation all read from it rather than re-deriving the chemistry independently.
 
